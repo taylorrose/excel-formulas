@@ -33,10 +33,3 @@ End If
 ExtractRegEx = result
 
 End Function
-
-
-Function CalcAttribution()
-
-
-
-End Function
