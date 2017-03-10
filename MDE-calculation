@@ -1,0 +1,87 @@
+Function SampleSizeMDE(Baseline As Double, MDE As Double) As Double
+    Dim T_alpha2 As Double
+    Dim SD1 As Double
+    Dim SD2 As Double
+    Dim T_beta As Double
+    Dim alpha As Double
+    Dim power As Double
+    
+    alpha = 0.05
+    power = 0.8
+    MDE = MDE * Baseline
+    
+    T_alpha2 = PPND(1 - (alpha / 2))
+    T_beta = PPND(power)
+    
+    SD1 = Sqr(2 * Baseline * (1 - Baseline))
+    SD2 = Sqr(Baseline * (1 - Baseline) + (Baseline + MDE) * (1 - Baseline - MDE))
+    
+    SampleSizeMDE = (T_alpha2 * SD1 + T_beta * SD2) * ((T_alpha2 * SD1 + T_beta * SD2) / (MDE * MDE))
+End Function
+
+
+Function PPND(Prop As Double) As Double
+    Const a0 = 2.50662823884
+    Const a1 = -18.61500062529
+    Const a2 = 41.39119773534
+    Const a3 = -25.44106049637
+    Const b1 = -8.4735109309
+    Const b2 = 23.08336743743
+    Const b3 = -21.06224101826
+    Const b4 = 3.13082909833
+    Const c0 = -2.78718931138
+    Const c1 = -2.29796479134
+    Const c2 = 4.85014127135
+    Const c3 = 2.32121276858
+    Const d1 = 3.54388924762
+    Const d2 = 1.63706781897
+    Const split = 0.42
+    Dim r As Double
+    Dim value As Double
+    
+    
+    If (Abs(Prop - 0.5) <= split) Then
+    
+        r = (Prop - 0.5) * (Prop - 0.5)
+
+        value = (Prop - 0.5) * (((a3 * r + a2) * r + a1) * r + a0) / ((((b4 * r + b3) * r + b2) * r + b1) * r + 1)
+    
+    ElseIf (0 < Prop And Prop < 1) Then
+    
+        If (Prop > 0.5) Then
+            r = Sqr(-Log(1 - Prop))
+        Else
+            r = Sqr(-Log(Prop))
+        End If
+        
+        value = (((c3 * r + c2) * r + c1) * r + c0) / ((d2 * r + d1) * r + 1)
+        
+        If (Prop < 0.5) Then
+            value = -value
+        End If
+    End If
+    
+    PPND = value
+
+End Function
+
+
+Function FindMDE(sample As Double, Baseline As Double) As Double
+
+    Dim n As Double
+    Dim MDE As Double
+    Dim i As Double
+    
+    i = 0
+    MDE = 0.001
+    n = SampleSizeMDE(Baseline, MDE)
+    
+    Do While (n > sample)
+        i = i + 1
+        MDE = MDE + (i / 1000)
+        n = SampleSizeMDE(Baseline, MDE)
+    Loop
+        
+    FindMDE = MDE / Baseline
+
+End Function
