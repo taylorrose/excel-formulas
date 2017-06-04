@@ -1,3 +1,5 @@
+'http://trose.co/MDE-Excel
+
 Function SampleSizeMDE(Baseline As Double, MDE As Double) As Double
     Dim T_alpha2 As Double
     Dim SD1 As Double
