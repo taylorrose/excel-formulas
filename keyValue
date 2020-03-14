@@ -1,0 +1,5 @@
+Function keyValue(key As Variant, value As Variant) As String
+
+    keyValue = "'" + key + "': " + "'" + value + "'"
+
+End Function
